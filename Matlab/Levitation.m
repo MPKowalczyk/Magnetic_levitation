@@ -11,7 +11,7 @@ L_coefs=polyfit(d,y,2);
 a=sqrt(L_coefs(1));
 b=L_coefs(2)/a;
 L_calc=L0+2e-3*m*g./(a^2*d+a*b);
-dL_1=-2e-3*m*g./(ad+b)^2;
+dL_1=-2e-3*m*g./(a*d+b).^2;
 figure;
 plot(d,L,'b',d,L_calc,'g');
 xlabel('Distance [m]');
@@ -23,7 +23,7 @@ legend('Measured','Calculated');
 %% dL - method 2
 I=zeros(1,100);
 L_coefs=polyfit(d,I,2);
-dL_2=-2e-3*m*g./(ad+b)^2;
+dL_2=-2e-3*m*g./(a*d+b).^2;
 figure;
 plot(d,dL_1,'b',d,dL_2,'r');
 xlabel('Distance [m]');
