@@ -1,0 +1,143 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% University/School Laboratory Report
+% LaTeX Template
+% Version 3.1 (25/3/14)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Linux and Unix Users Group at Virginia Tech Wiki 
+% (https://vtluug.org/wiki/Example_LaTeX_chem_lab_report)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english,polish]{babel}
+%\usepackage[T1]{fontenc}
+\usepackage{polski}
+\usepackage{amsfonts}
+\usepackage[left=3cm,right=3cm,top=3cm,bottom=3cm]{geometry}
+\usepackage{siunitx} % Provides the \SI{}{} and \si{} command for typesetting SI units
+\usepackage{graphicx} % Required for the inclusion of images
+\usepackage{natbib} % Required to change bibliography style to APA
+\usepackage{amsmath} % Required for some math elements
+\usepackage{epstopdf}
+\usepackage[colorlinks=false,urlcolor=blue,citecolor=green]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{array}
+\usepackage{hhline}
+\usepackage{svg}
+\usepackage{multirow}
+\usepackage{enumerate}%[I], numerki, [(a)]
+\usepackage{float}
+
+%Figure numbering
+\usepackage{chngcntr}
+\counterwithin{figure}{section}
+\counterwithin{equation}{section}
+
+\newcommand*{\captionsource}[2]{%
+  \caption[{#1}]{%
+    #1%
+    \\\hspace{\linewidth}%
+    \textbf{Źródło:} #2%
+  }%
+}
+
+\AtBeginDocument{
+	\renewcommand{\tablename}{Tabela}
+	\renewcommand{\figurename}{Rys.}
+}
+
+%tabelki
+\usepackage{tabularx}
+\newcolumntype{A}{>{\centering\arraybackslash}X}
+\newcolumntype{B}{>{\centering\arraybackslash} m{0.4\textwidth} }
+
+%\setlength\parindent{0pt} % Removes all indentation from paragraphs
+
+\renewcommand{\labelenumi}{\alph{enumi}.} % Make numbering in the enumerate environment by letter rather than number (e.g. section 6)
+
+%\usepackage{times} % Uncomment to use the Times New Roman font
+
+\title{\textbf{Lewitacja magnetyczna}} % Title
+
+\author{Marcin Kowalczyk \\ Mateusz Ługowski \\ Karolina Szmyd} % Author name
+
+\date{22 marzec, 2017} % Date for the report
+
+\begin{document}
+
+\maketitle % Insert the title, author and date
+
+\begin{center}
+\begin{tabular}{l r}
+Data wykonania: & 22 marzec, 2017 \\ % Date the experiment was performed
+Przedmiot: & Laboratorium Problemowe \\
+Prowadzący: & Dawid Knapik % Instructor/supervisor
+\end{tabular}
+\end{center}
+
+\section{Wstęp}
+Celem ćwiczenia było zbadanie działania układu składającego się z regulatora przekaźnikowego i liniowego obiektu sterowania drugiego rzędu. Zapoznano się z dwoma zjawiskami występującymi w układach nieliniowych: reżimem ślizgowym i cyklem granicznym. Reżimy ślizgowe występują w układach przełączanych i o zmiennej strukturze. Cykle graniczne spotyka się różnych systemach nieliniowych. Wykorzystano portrety fazowe do zobrazowania wspomnianych zjawisk.
+
+%\section{Wyniki}
+%Na rysunku \ref{fig:rezim_slizgowy} przedstawiono zjawisko reżimu ślizgowego dla układu z regulatorem dwupołożeniowym.
+%
+%\begin{figure}[h]
+%	\centering
+%	\includegraphics[width=4in]{rezim_slizgowy.eps}
+%	\caption{Portret fazowy z widocznym reżimem ślizgowym.}
+%	\label{fig:rezim_slizgowy}
+%\end{figure}
+%
+%Na rysunku \ref{fig:cykl_graniczny_pf} przedstawiono portret fazowy z widocznym stabilnym cyklem granicznym w układzie z regulatorem dwupołożeniowym z histerezą. Na rysunku \ref{fig:cykl_graniczny_ster} widoczne jest przykładowe sterowanie dla układu ze stabilnym cyklem granicznym, a na rysunku \ref{fig:cykl_graniczny_zs} przykładowy przebieg czasowy zmiennych stanu dla tego układu.
+%
+%\begin{figure}[h]
+%	\centering
+%	\includegraphics[width=4in]{cykl_graniczny_pf.eps}
+%	\caption{Portret fazowy z widocznym cyklem granicznym.}
+%	\label{fig:cykl_graniczny_pf}
+%\end{figure}
+%
+%\begin{figure}[h]
+%	\centering
+%	\includegraphics[width=4in]{cykl_graniczny_ster.eps}
+%	\caption{Przebieg czasowy sterowania dla układu z cyklem granicznym.}
+%	\label{fig:cykl_graniczny_ster}
+%\end{figure}
+%
+%\begin{figure}[H]
+%	\centering
+%	\includegraphics[width=4in]{cykl_graniczny_zs.eps}
+%	\caption{Przebiegi czasowe zmiennych stanu dla układu z cyklem granicznym.}
+%	\label{fig:cykl_graniczny_zs}
+%\end{figure}
+%
+%Na rysunku \ref{fig:tropolozeniowy_hist_pf} przedstawiono portrety fazowe dla układu z regulatorem trójpołożeniowym. Widoczne są dwie proste przełączeń.
+%
+%\begin{figure}[h]
+%	\centering
+%	\includegraphics[width=4in]{trojpolozeniowy_hist_pf.eps}
+%	\caption{Portret fazowy z układu z regulatorem trójpołożeniowym.}
+%	\label{fig:tropolozeniowy_hist_pf}
+%\end{figure}
+
+\bibliographystyle{apalike}
+
+\bibliography{sample}
+
+%----------------------------------------------------------------------------------------
+
+
+\end{document}
