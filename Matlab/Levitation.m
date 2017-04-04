@@ -1,5 +1,9 @@
 %% Magnetic levitation
 
+%% Model parameters
+model.m=0.058;              % [kg]               % mass of ball
+model.g=9.81;               % [m/s^2]
+
 %% Parameters for distance sensor
 sensor.V=[9.22, 8.95, 8.57, 8.21, 7.83, 7.38,...
     6.86, 6.29, 5.67, 4.97, 4.25, 3.5, 2.67,...
@@ -18,7 +22,9 @@ VIchar.I=[0.005, 0.049, 0.184, 0.327, 0.471,...
     0.616, 0.762, 0.908, 1.054, 1.198, 1.344,...
     1.487, 1.631, 1.773, 1.914, 2.055, 2.194,...
     2.331, 2.466, 2.601, 2.703];
-VIchar.coefs=polyfit(VIchar.V,VIchar.I,2);
+VIchar.Vmax=11.43;
+VIchar.coefs=polyfit(VIchar.V,VIchar.I,1);
+plot(VIchar.V,VIchar.I,VIchar.V,polyval(VIchar.coefs,VIchar.V));
 
 %% Distance to inductance characteristic
 DLchar.d=sensor.d;
@@ -27,43 +33,24 @@ DLchar.L=[118.3, 118.3, 116.6, 114.9, 113.3,...
     107.1, 106.5, 106.0, 105.6, 105.2, 104.8,...
     104.5, 104.2, 104.0, 103.7, 103.5, 103.3,...
     103.1, 103.0, 102.8, 102.7, 102.6, 102.5,...
-    102.4, 102.3, 102.2, 102.1, 102.1];
-DLchar.L0=98;
-DLchar.coefs=polyfit(VIchar.V,VIchar.I,2);
+    102.4, 102.3, 102.2, 102.1, 102.1]/1e3;
+DLchar.L0=101.5/1e3;
+DLchar.coefs=fit(DLchar.d(2:end)',(DLchar.L(2:end)-DLchar.L0)','exp1');
 
-%% Model parameters
-model.m=0.058;              % [kg]               % mass of ball
-model.g=9.81;
-%% dL - method 1
+%% Parameters for model
+Par_Fem=[DLchar.coefs.a -1/DLchar.coefs.b];
 m=model.m;
-d=sensor.d;
 g=model.g;
-L0=DLchar.L0;
-L=DLchar.L;
-y=2e-3*m*g./(L-L0);
-L_coefs=polyfit(d(2:end),y(2:end),1);
-a=sqrt(L_coefs(1));
-b=L_coefs(2)/a;
-L_calc=L0+2e-3*m*g./(a^2*d+a*b);
-dL_1=-2e-3*m*g./(a*d+b).^2;
-L_coefs2=fit(d(2:end)',(L(2:end)-101.5)','exp1');
+x0=0;
+UI=VIchar.coefs;
+ki=2.8964;
+uc=0;
+
+%%
 figure;
-plot(d(2:end),L(2:end),'b',d(2:end),L_calc(2:end),'g',d(2:end),101.5+L_coefs2.a*exp(L_coefs2.b*d(2:end)),'r');
+plot(DLchar.d,DLchar.L,'b',DLchar.d,DLchar.L0+DLchar.coefs.a*exp(DLchar.coefs.b*DLchar.d),'r');
 xlabel('Distance [m]');
 ylabel('Inductance [H]');
 title('Comparison of calculated and measured inductance');
 grid on;
 legend('Measured','Calculated');
-%{
-%% dL - method 2
-I=zeros(1,100);
-L_coefs=polyfit(d,I,2);
-dL_2=-2e-3*m*g./(a*d+b).^2;
-figure;
-plot(d,dL_1,'b',d,dL_2,'r');
-xlabel('Distance [m]');
-ylabel('Inductance derivative [H/m]');
-title('Comparison of calculated derivatives');
-grid on;
-legend('Method 1','Method 2');
-%}
