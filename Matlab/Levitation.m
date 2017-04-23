@@ -23,8 +23,10 @@ VIchar.I=[0.005, 0.049, 0.184, 0.327, 0.471,...
     1.487, 1.631, 1.773, 1.914, 2.055, 2.194,...
     2.331, 2.466, 2.601, 2.703];
 VIchar.Vmax=11.43;
-VIchar.coefs=polyfit(VIchar.V,VIchar.I,1);
+VIchar.coefs=polyfit(VIchar.V,VIchar.I,2);
+figure(1);
 plot(VIchar.V,VIchar.I,VIchar.V,polyval(VIchar.coefs,VIchar.V));
+grid on;
 
 %% Distance to inductance characteristic
 DLchar.d=sensor.d;
@@ -41,13 +43,13 @@ DLchar.coefs=fit(DLchar.d(2:end)',(DLchar.L(2:end)-DLchar.L0)','exp1');
 Par_Fem=[DLchar.coefs.a -1/DLchar.coefs.b];
 m=model.m;
 g=model.g;
-x0=0;
+x0=0.02;
 UI=VIchar.coefs;
 ki=2.8964;
 uc=0;
 
 %%
-figure;
+figure(2);
 plot(DLchar.d,DLchar.L,'b',DLchar.d,DLchar.L0+DLchar.coefs.a*exp(DLchar.coefs.b*DLchar.d),'r');
 xlabel('Distance [m]');
 ylabel('Inductance [H]');
