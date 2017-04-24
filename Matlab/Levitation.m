@@ -43,10 +43,11 @@ DLchar.coefs=fit(DLchar.d(2:end)',(DLchar.L(2:end)-DLchar.L0)','exp1');
 Par_Fem=[DLchar.coefs.a -1/DLchar.coefs.b];
 m=model.m;
 g=model.g;
-x0=0.02;
 UI=VIchar.coefs;
 ki=2.8964;
 uc=0;
+P1=1.4142e-4;
+P2=4.5626e-3;
 
 %%
 figure(2);
@@ -56,3 +57,22 @@ ylabel('Inductance [H]');
 title('Comparison of calculated and measured inductance');
 grid on;
 legend('Measured','Calculated');
+
+%% Linearized model - equilibrium point
+x0=zeros(3,1);
+x0(1)=0.01;
+x0(2)=0;
+x0(3)=sqrt(Par_Fem(2)*m*g*exp(x0(1)/Par_Fem(2))/Par_Fem(1));
+u0=(x0(3)-uc)/ki;
+
+%% Linearized model - Matrix
+A=[0 1 0;x0(3)^2/m*Par_Fem(1)/Par_Fem(2)^2*exp(-x0(1)/Par_Fem(2))...
+   0 -2*x0(3)/m*Par_Fem(1)/Par_Fem(2)*exp(-x0(1)/Par_Fem(2));...
+   -(ki*u0+uc-x0(3))/P1*exp(x0(1)/P2) 0 -P2/P1*exp(x0(1)/P2)];
+B=[0;0;ki*P2/P1*exp(x0(1)/P2)];
+C=eye(3);
+D=zeros(3,1);
+
+%% LQ regulator
+sys=ss(A,B,C,D);
+K=lqr(sys,eye(3),1,zeros(3,1));
