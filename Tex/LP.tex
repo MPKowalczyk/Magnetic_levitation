@@ -64,7 +64,7 @@
 \newcolumntype{A}{>{\centering\arraybackslash}X}
 \newcolumntype{B}{>{\centering\arraybackslash} m{0.4\textwidth} }
 
-%\setlength\parindent{0pt} % Removes all indentation from paragraphs
+\setlength\parindent{0pt} % Removes all indentation from paragraphs
 
 \renewcommand{\labelenumi}{\alph{enumi}.} % Make numbering in the enumerate environment by letter rather than number (e.g. section 6)
 
@@ -74,7 +74,7 @@
 
 \author{Marcin Kowalczyk \\ Mateusz Ługowski \\ Karolina Szmyd} % Author name
 
-\date{22 marzec, 2017} % Date for the report
+\date{22 maj, 2017} % Date for the report
 
 \begin{document}
 
@@ -82,14 +82,91 @@
 
 \begin{center}
 \begin{tabular}{l r}
-Data wykonania: & 22 marzec, 2017 \\ % Date the experiment was performed
+Data wykonania: & 10 maj, 2017 \\ % Date the experiment was performed
 Przedmiot: & Laboratorium Problemowe \\
 Prowadzący: & Dawid Knapik % Instructor/supervisor
 \end{tabular}
 \end{center}
 
 \section{Wstęp}
-Celem ćwiczenia było zbadanie działania układu składającego się z regulatora przekaźnikowego i liniowego obiektu sterowania drugiego rzędu. Zapoznano się z dwoma zjawiskami występującymi w układach nieliniowych: reżimem ślizgowym i cyklem granicznym. Reżimy ślizgowe występują w układach przełączanych i o zmiennej strukturze. Cykle graniczne spotyka się różnych systemach nieliniowych. Wykorzystano portrety fazowe do zobrazowania wspomnianych zjawisk.
+\label{sec:wstep}
+Celem projektu było zaprojektowanie systemu sterowania dla problemu lewitacji magnetycznej. Opiera się ona na powstanie siły w ferromagnetyku umieszczonym z zewnętrznym polu magnetycznym. Siła grawitacji działająca na metalową kulkę ma być równoważona przez oddziaływania magnetyczne. Wytwarzane pole magnetyczne zależy od prądu płynącego przez cewkę. Układ umożliwia pomiar położenia obiektu, sterowanie napięciem podawanym na cewkę generującą pole magnetyczne oraz umożliwia współpracę z urządzeniami sterującymi. Do pomiaru położenia lewitującej sfery służy układ optyczny. Im wyżej znajduje się sfera, tym bardziej zasłania źródło światła, a więc mniej światła pada na fototranzystor. Mierzony jest również prąc płynący przez cewkę za pomocą napięcia na rezystorze. Zakłada się, że ruch kulki odbywa się tylko w osi pionowej.
+
+Do symulacji, obliczeń numerycznych i generowania kodu wykorzystano programy \textit{Matlab} i \textit{Simulink}. Wygenerowany kod jest wykonywany w czasie rzeczywistym. Możliwa jest również zmiana parametrów układu sterowania (np. pozycji zadanej) w czasie pracy układu. Mierzone wielkości są również wyświetlane na bieżąco w programie \textit{Simulink}.
+
+\section{Model matematyczny}
+\label{sec:modelmatematyczny}
+Model matematyczny układu został wyprowadzony z wykorzystaniem funkcji Lagrange'a. Jest ona różnicą energii kinetycznej i potencjalnej.
+\begin{equation}
+T=\frac{m\dot x^2}{2}+\frac{L(x)\dot q^2}{2}+\frac{1}{2}\int\limits_0^t R\dot q^2dt+mgx+qu
+\label{eq:flagrange}
+\end{equation}
+\noindent Gdzie:\newline
+\(x\) jest odległością sfery od elektromagnesu.\newline
+\(q\) jest ładunkiem przepływającym przez cewkę.\newline
+\(I=\dot q\) jest prądem płynącym w cewce.\newline
+\(m\) jest masą sfery.\newline
+\(R\) jest rezystancją cewki.\newline
+\(L(x)\) jest indukcyjnością w zależności od położenia sfery.\newline
+\(g\) jest przyspieszeniem ziemskim.\newline
+\(u\) jest napięciem sterującym.
+
+Funkcje \(x(t)\) i \(q(t)\) spełniają następujący układ równań:
+\begin{equation}
+\begin{aligned}
+\frac{d}{dt}\frac{dT}{d\dot x}-\frac{dT}{dx}&=0\\
+\frac{d}{dt}\frac{dT}{d\dot q}-\frac{dT}{dq}&=0
+\end{aligned}
+\label{eq:lagrange}
+\end{equation}
+
+Na podstawie równań \eqref{eq:flagrange} i \eqref{eq:lagrange} otrzymuje się następujące równania opisujące dynamikę systemu:
+\begin{equation}
+\begin{aligned}
+\frac{d^2x}{dt^2}&=\frac{1}{2m}\frac{dL}{dx}I^2+g\\
+\frac{dI}{dt}&=\frac{1}{L}(-\frac{dL}{dx}\frac{dx}{dt}I-RI+u)
+\end{aligned}
+\label{eq:dynamic}
+\end{equation}
+
+Siła działająca na sferę wyrażona jest następującą zależnością:
+\begin{equation}
+F(x,I)=\frac{1}{2}\frac{dL}{dx}I^2
+\end{equation}
+
+Przyjęto, że wartość induktancji w zależności od odległości od cewki ma następującą postać:
+\begin{equation}
+L(x)=L_0+L_1e^{-ax}
+\end{equation}
+\noindent Gdzie:\newline
+\(L_0\) jest indukcyjnością cewki bez ferromagnetycznej sfery.
+
+Założono, że układ, którego wyjściem jest prąd cewki, a wejściem napięcie podawane na cewkę, jest obiektem inercyjnym pierwszego rzędu.
+\begin{equation}
+\frac{dI}{dt}=-\frac{1}{T}I+\frac{k}{T}(u+u_c)
+\label{eq:coil_current}
+\end{equation}
+\noindent Gdzie:\newline
+\(T\) jest stałą czasową.\newline
+\(k\) jest współczynnikiem wzmocnienia.\newline
+\(u\) jest napięciem sterującym.\newline
+\(u_c\) jest stałym napięciem na cewce.
+
+Wyliczono równania stanu opisujące działanie układu lewitacji magnetycznej.
+\begin{equation}
+\begin{aligned}
+\frac{dx_1}{dt}&=x_2\\
+\frac{dx_2}{dt}&=\frac{1}{2m}\frac{dL(x_1)}{dx_1}x_3^2+g+z_1(t)\\
+\frac{dx_3}{dt}&=-\frac{1}{T}x_3+\frac{k}{T}(u(t)+u_c+z_2(t))
+\end{aligned}
+\label{eq:ss}
+\end{equation}
+\noindent Gdzie:\newline
+
+
+\section{Identyfikacja}
+\label{sec:identyfikacja}
+
 
 %\section{Wyniki}
 %Na rysunku \ref{fig:rezim_slizgowy} przedstawiono zjawisko reżimu ślizgowego dla układu z regulatorem dwupołożeniowym.

@@ -48,7 +48,7 @@ ki=2.8964;
 uc=0;
 P1=1.4142e-4;
 P2=4.5626e-3;
-pos=0.010;
+pos=0.01;
 
 %%
 figure(2);
@@ -66,14 +66,36 @@ x0(2)=0;
 x0(3)=sqrt(Par_Fem(2)*m*g*exp(x0(1)/Par_Fem(2))/Par_Fem(1));
 u0=(x0(3)-uc)/ki;
 
-%% Linearized model - Matrix
+%% Linearized model - Matrix - LQ
 A=[0 1 0;x0(3)^2/m*Par_Fem(1)/Par_Fem(2)^2*exp(-x0(1)/Par_Fem(2))...
    0 -2*x0(3)/m*Par_Fem(1)/Par_Fem(2)*exp(-x0(1)/Par_Fem(2));...
    -(ki*u0+uc-x0(3))/P1*exp(x0(1)/P2) 0 -P2/P1*exp(x0(1)/P2)];
 B=[0;0;ki*P2/P1*exp(x0(1)/P2)];
-C=eye(3);
+C=[eye(3)];
 D=zeros(3,1);
+
+%% Linearized model - Matrix - LQI
+A=[0 1 0 0;x0(3)^2/m*Par_Fem(1)/Par_Fem(2)^2*exp(-x0(1)/Par_Fem(2))...
+   0 -2*x0(3)/m*Par_Fem(1)/Par_Fem(2)*exp(-x0(1)/Par_Fem(2)) 0;...
+   -(ki*u0+uc-x0(3))/P1*exp(x0(1)/P2) 0 -P2/P1*exp(x0(1)/P2) 0;...
+   50 0 0 0];
+B=[0;0;ki*P2/P1*exp(x0(1)/P2);0];
+C=[eye(3) [0;0;0]];
+D=zeros(3,1);
+
+%% Model for Luenberger
+Ao=[0 1 0 ;x0(3)^2/m*Par_Fem(1)/Par_Fem(2)^2*exp(-x0(1)/Par_Fem(2))...
+   0 -2*x0(3)/m*Par_Fem(1)/Par_Fem(2)*exp(-x0(1)/Par_Fem(2));...
+   -(ki*u0+uc-x0(3))/P1*exp(x0(1)/P2) 0 -P2/P1*exp(x0(1)/P2)];
+Bo=[0;0;ki*P2/P1*exp(x0(1)/P2)];
+Co=[1 0 0;0 0 1];
+Do=zeros(2,1);
+SSo=ss(Ao,Bo,Co,Do);
+
+lambda=[-5 -3 -2];
+L=place(Ao.',Co.',lambda).';
+F=Ao-L*Co;
 
 %% LQ regulator
 sys=ss(A,B,C,D);
-K=lqr(sys,eye(3),1,zeros(3,1));
+K=lqr(sys,eye(length(B)),1,zeros(length(B),1));

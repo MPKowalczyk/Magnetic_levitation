@@ -46,6 +46,9 @@ DLchar.L=[118.3, 118.3, 116.6, 114.9, 113.3,...
     103.1, 103.0, 102.8, 102.7, 102.6, 102.5,...
     102.4, 102.3, 102.2, 102.1, 102.1]/1e3;
 DLchar.L0=101.5/1e3;
+%DLchar.coefs=polyfit(DLchar.d,DLchar.L,1);
+%y=2e-3*model.m*model.g./(DLchar.L-DLchar.L0);
+%DLchar.coefs1=polyfit(DLchar.d(2:end),y(2:end),1);
 DLchar.coefs=fit(DLchar.d(2:end)',(DLchar.L(2:end)-DLchar.L0)','exp1');
 
 figure;
@@ -64,3 +67,4 @@ xlabel('Distance [m]');
 ylabel('Inductance derivative [H/m]');
 title('Calculated derivative');
 grid on;
+
